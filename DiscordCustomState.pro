@@ -57,7 +57,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 win32: LIBS += -L$$PWD/./ -ldiscord_game_sdk.dll
-unix:!macx: LIBS += -L$$PWD/./ -ldiscord_game_sdk
+unix:!macx:{
+    LIBS += -L. -ldiscord_game_sdk
+    QMAKE_LFLAGS += -no-pie
+    QMAKE_RPATHDIR += $ORIGIN
+}
 
 INCLUDEPATH += $$PWD/.
 DEPENDPATH += $$PWD/.

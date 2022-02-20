@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QThread>
 #include <QApplication>
 #include <QSettings>
 
@@ -19,6 +20,7 @@ StateSetting ReadSetting(){
     QSettings setting(settingPath, QSettings::IniFormat);
 
     res.clientID = setting.value("ClientID").toLongLong();
+    res.updatePeriod = setting.value("UpdatePeriod").toUInt();
 
     setting.beginGroup("State");
     res.details = setting.value("Details").toString();
@@ -41,6 +43,7 @@ StateSetting ReadSetting(){
 void ChangeSetting(StateSetting stateSetting){
     QSettings iniSetting(settingPath, QSettings::IniFormat);
     iniSetting.setValue("ClientID", QString::number(stateSetting.clientID));
+    iniSetting.setValue("UpdatePeriod", QString::number(stateSetting.updatePeriod));
 
     iniSetting.beginGroup("State");
     iniSetting.setValue("Details", stateSetting.details);
@@ -87,7 +90,8 @@ void DiscordController::UpdateState(DiscordState *state, uint sleepMillSec){
     { qDebug() << ((result == discord::Result::Ok) ? "Succeeded" : "Failed")
                << " updating activity!\n"; });
     state->core->RunCallbacks();
-    std::this_thread::sleep_for(std::chrono::milliseconds(sleepMillSec));
+    qDebug() << "sleepMillSec" << sleepMillSec;
+    msleep(sleepMillSec);
 }
 
 // 設定自定義 discord 遊戲狀態
@@ -112,6 +116,6 @@ void DiscordController::StartCustomState(){
     // 狀態更新 loop
     do
     {
-        UpdateState(&state, 3000);
+        UpdateState(&state, stateSetting.updatePeriod);
     } while (!interrupted);
 }

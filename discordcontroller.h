@@ -10,6 +10,7 @@ const QString settingPath = "config.ini";
 
 struct StateSetting{
     discord::ClientId clientID;
+    quint32 updatePeriod;
     QString details;
     QString state;
     QString smallImage;

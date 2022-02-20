@@ -45,6 +45,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::saveSetting(){
     stateSetting.clientID = ui->clientIDLineEdit->text().toLongLong();
+    stateSetting.updatePeriod = ui->updatePeriodLineEdit->text().toUInt();
 
     stateSetting.details = ui->detailsLineEdit->text();
     stateSetting.state = ui->stateLineEdit->text();
